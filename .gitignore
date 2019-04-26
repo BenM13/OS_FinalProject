@@ -1,0 +1,9 @@
+*.class
+.DS_Store
+*.info
+*.ol
+pwd
+*.log*
+*.json
+*.csv
+*log.txt
