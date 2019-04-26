@@ -10,7 +10,7 @@ public class Utilities
     */
     {
         boolean matches = false;
-        if (argument.clontains(".txt") || argument.contains(".csv"))
+        if (argument.contains(".txt") || argument.contains(".csv"))
         {
             matches = true;
         }
@@ -38,6 +38,50 @@ public class Utilities
             }
         }
         return courses;
+    }
+
+    public static String getTimestamp()
+    /**
+    Returns the current date and time as a String 
+    */
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        Date today = new Date();
+        return formatter.format(today);
+    }
+
+    public static String getOutputFile(String[] args)
+    /**
+    Parses through args array searching for the first 
+    argument that ends with .txt or .csv. Returns a null
+    String if no filename can be found.
+    */
+    {
+        String filename = null;
+        for (String s: args)
+        {
+            if (s.contains(".txt") || s.contains(".csv"))
+            {
+                filename = s;
+                break;
+            }
+        }
+        return filename;
+    }
+
+    public static void quitProgram()
+    /**
+    Safely exits the program 
+    */
+    {
+        System.out.println("Now exiting...goodbye!");
+        System.exit(0);
+    }
+
+    public static void quitProgram(String message)
+    {
+        System.out.println(message);
+        System.exit(0);
     }
 
 }

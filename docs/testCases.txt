@@ -1,0 +1,62 @@
+Position of command line arguments:
+
+Although the documentation instructs the user to call the script with arguments in a certain position,
+the truth, is position does not matter. The following two script calls will actually yield the same result:
+    java NewQuery 101x/FL17 --opt_in
+    java NewQuery --opt_in 101x/FL17
+-------------------------------------------
+
+Number of dashes:
+
+The use of dashes in the command line arguments was modeled after Git's CLI.
+One dash is used for a flag's short-hand, while two dashes spell out the full name of the flag
+(ex: -h and --help). However, because the number of dashes in arguments is not standard across
+CLI programs, this script was designed so that the number of dashes does not matter. As long as there is 
+at least one dash at the beggining of an argument, the program will know that it is a flag:
+    --help, -help, -------help will all call the help function if used. 
+-------------------------------------------
+
+Contradicting flags:
+
+Several columns in the database tables are booleans. These are attributes such as paid, completed, or viewed. 
+The student either viewed a course, or did not view a course. This is a command line utility; there is no interaction
+with the user. Therefore there is nothing to prevent a user from asking for a list of all students who viewed a course
+AND did not view a course. If this were to happen, the query would run successfully but would not produce any results. 
+For a single course, it's not possible to have both viewed AND not viewed the course. Such a query would always return 
+false. As a result, the program will accept the query and run it, but will produce a warning message in the event that
+the results are empty. For example, if I run the following query asking for all students of 101x/FL17 who have viewed 
+and not viewed the course the following will be printed to the console:
+```
+12/11/2018 14:19:26 - Connection established.
+12/11/2018 14:19:26 - Executing query...
+12/11/2018 14:19:26 - WARNING: Query yielded no results
+        Command line arguments may be incorrect
+12/11/2018 14:19:26 - Connection closed.
+```
+Note that this is a warning message as opposed to an error. It is possible that there are no results returned even if
+the command line arguments are correct. Perhaps no one passed that particular course.
+-------------------------------------------
+
+Handling junk:
+
+Below is a sample script call and output for when we run the script with junk as the arguments:
+    java NewQuery dkjf982 3kjt0 rj20fe
+```
+12/17/2018 11:36:43 - Connection established.
+12/17/2018 11:36:43 - Executing query...
+12/17/2018 11:36:43 - WARNING: Query yielded no results
+        Command line arguments may be incorrect
+12/17/2018 11:36:43 - Connection closed.
+```
+The query will successfully execute, but will return no results. The custom-made NoResultsException
+will be thrown and a warning message will be displayed on the console and printed to the log. When pasrsing
+the arguments, the program assumes that any argument without a dash character '-' at the beginning must either
+be a course number or a output file. If any of these arguments do not contain a .csv or .txt extension, they 
+will be processed as a course number. The query is desinged to run no matter what is used as course_number; if the
+course number does not exist, the query will simply return no results. 
+
+Handling bad flags, yields a different outcome. If we run the same query again but with this as the call:
+    java NewQuery --dkjf982 --3kjt0 --rj20fe
+the query will with no exceptions. The results file will show that every row from the courses_taken table was returned.
+This is because without a provided course number, the script will search for all courses. Additionally, if the flags
+do not match any in the HashMap, they will simply be ignored. 

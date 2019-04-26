@@ -1,0 +1,30 @@
+Table name: students
+// list of registered users
+Columns: 
+    - student_id : VARCHAR PRIMARY KEY
+    - student_name : VARCHAR
+    - student_email : VARCHAR
+    - email_opt_in : BOOLEAN
+
+***********************************
+
+Table name: course_list
+// list of available courses 
+Columns:
+    - id : INTEGER | PRIMARY KEY
+    - course_name: VARACHAR
+    - semester: VARCHAR // recorded as 
+
+***********************************
+
+Table name: courses_taken
+// one entry per student per course taken 
+Columns: 
+    - student_id : VARCHAR FOREIGN KEY for students 
+    - course_number : VARCHAR | FOREIGN KEY for course_list
+    - reg_mode : VARCHAR // (i.e. paid or audit)
+    - viewed : BOOLEAN // true if they have viewed the course 
+    - completed : BOOLEAN // true if they finished the course
+    
+    
+

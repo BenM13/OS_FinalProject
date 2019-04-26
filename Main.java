@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-Public class Main
+public class Main
 {
     public static void main(String[] args)
     {
