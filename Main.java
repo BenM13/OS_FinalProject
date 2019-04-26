@@ -6,7 +6,9 @@ public class Main
     {
         for (String c: Utilities.getCourseList(args))
         {
-            System.out.println(Utilities.buildQuery(c + "\n"));
+            // System.out.println(Utilities.buildQuery(c + "\n"));
+            RunnableQuery t = new RunnableQuery(c, args);
+            t.start();
         }
     }
 }
