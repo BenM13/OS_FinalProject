@@ -62,7 +62,7 @@ public class Utilities
         return formatter.format(today);
     }
 
-    public static String getOutputFile(String[] args)
+    public static String getOutputFile(String[] args, int num)
     /**
     Parses through args array searching for the first 
     argument that ends with .txt or .csv. Returns a null
@@ -72,9 +72,12 @@ public class Utilities
         String filename = null;
         for (String s: args)
         {
-            if (s.contains(".txt") || s.contains(".csv"))
+            if (s.contains(".txt"))
             {
-                filename = s;
+                filename = s.replace(".txt", "_") + String.valueOf(num);
+                break;
+            } else if (s.contains(".csv")) {
+                filename = s.replace(".csv", "_") + String.valueOf(num);
                 break;
             }
         }

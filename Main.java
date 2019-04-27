@@ -4,11 +4,12 @@ public class Main
 {
     public static void main(String[] args)
     {
+        int num = 1;
         for (String c: Utilities.getCourseList(args))
         {
-            // System.out.println(Utilities.buildQuery(c + "\n"));
-            RunnableQuery t = new RunnableQuery(c, args);
+            RunnableQuery t = new RunnableQuery(c, args, num);
             t.start();
+            num++;
         }
     }
 }

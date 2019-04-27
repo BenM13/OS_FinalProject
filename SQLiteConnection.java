@@ -3,6 +3,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.concurrent.locks.ReentrantLock;
 import java.lang.NullPointerException;
 
 public class SQLiteConnection
@@ -35,7 +36,7 @@ public class SQLiteConnection
         this.results = null;
     }
 
-    public void createConnection()
+    public void createConnection(ReentrantLock rl)
     /**
     Creates a connection object to the SQLite database.
     This object is stored as an instance variable of
@@ -43,6 +44,7 @@ public class SQLiteConnection
     */
     {
         FileOutput logger = new FileOutput(LOG_NAME);
+        rl.lock();
         logger.openLog();
         try
         {
@@ -57,9 +59,10 @@ public class SQLiteConnection
             logger.writeToAll("\t" + e.getMessage());
         }
         logger.closeFile();
+        rl.unlock();
     }
 
-    public void runQuery(String query)
+    public void runQuery(ReentrantLock rl, String query)
     /** 
     Creates a statement objects. Runs the provided query.
     Saves result set object as instance variable of 
@@ -67,6 +70,7 @@ public class SQLiteConnection
     */
     {
         FileOutput logger = new FileOutput(LOG_NAME);
+        rl.lock();
         logger.openLog();
         try
         {
@@ -82,14 +86,16 @@ public class SQLiteConnection
             logger.writeToAll("\t" + e.getMessage());
         }
         logger.closeFile();
+        rl.unlock();
     }
     
-    public void closeConnection()
+    public void closeConnection(ReentrantLock rl)
     /** 
     Closes the statement and connection objects
     */
     {
         FileOutput logger = new FileOutput(LOG_NAME);
+        rl.lock();
         logger.openLog();
         try
         {
@@ -106,9 +112,10 @@ public class SQLiteConnection
             logger.writeToAll("\t" + e.getMessage());
         }
         logger.closeFile();
+        rl.unlock();
     }
 
-    public void printResults(String[] args)
+    public void printResults(ReentrantLock rl, String[] args, int threadNum)
     /** 
     Creates an object of the FileOutput class.
     If user provided an output file name, that name is passed
@@ -119,7 +126,8 @@ public class SQLiteConnection
     written to the log file. 
     */
     {
-        String outputFile = Utilities.getOutputFile(args);
+        String outputFile = Utilities.getOutputFile(args, threadNum);
+        rl.lock();
         FileOutput exporter;
         FileOutput logger = new FileOutput(LOG_NAME);
         if (outputFile != null)
@@ -162,6 +170,7 @@ public class SQLiteConnection
 
         exporter.closeFile();
         logger.closeFile();
+        rl.unlock();
     }
 
 }

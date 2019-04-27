@@ -1,25 +1,30 @@
+import java.util.concurrent.locks.ReentrantLock;
+
 public class RunnableQuery implements Runnable
 {
     private Thread t;
     private String threadName;
+    private int threadNum;
     private String[] arguments;
 
-    public RunnableQuery(String name, String[] args)
+    public RunnableQuery(String name, String[] args, int num)
     {
         threadName = name;
         arguments = args;
+        threadNum = num;
         System.out.println("Creating " + threadName);
     }
 
     public void run()
     {
         String query = Utilities.buildQuery(threadName);
+        ReentrantLock rl = new ReentrantLock();
         SQLiteConnection db = new SQLiteConnection();
 
-        db.createConnection();
-        db.runQuery(query);
-        db.printResults(arguments);
-        db.closeConnection();
+        db.createConnection(rl);
+        db.runQuery(rl, query);
+        db.printResults(rl, arguments, threadNum);
+        db.closeConnection(rl);    
     }
 
     public void start()
