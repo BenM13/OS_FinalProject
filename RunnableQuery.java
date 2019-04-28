@@ -12,7 +12,7 @@ public class RunnableQuery implements Runnable
         threadName = name;
         arguments = args;
         threadNum = num;
-        System.out.println("Creating " + threadName);
+        System.out.println("Creating thread: " + threadName);
     }
 
     public void run()
@@ -22,14 +22,13 @@ public class RunnableQuery implements Runnable
         SQLiteConnection db = new SQLiteConnection();
 
         db.createConnection(rl);
-        db.runQuery(rl, query);
         db.printResults(rl, arguments, threadNum);
         db.closeConnection(rl);    
     }
 
     public void start()
     {
-        System.out.println("Starting " + threadName);
+        System.out.println("Starting thread: " + threadName);
         if (t == null) 
         {
             t = new Thread (this, threadName);

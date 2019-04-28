@@ -47,7 +47,7 @@ public class Utilities
     {
         String query = "SELECT c.student_id AS id, c.course_number AS course, " +
                        "students.student_name AS name, students.student_email AS email " +
-                       "FROM (SELECT * FROM courses_taken WHERE course_number = %s) c " +
+                       "FROM (SELECT * FROM courses_taken WHERE course_number = '%s') c " +
                        "JOIN students ON students.student_id = c.student_id";
         return String.format(query, course);
     }
