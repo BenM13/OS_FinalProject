@@ -35,6 +35,6 @@ public class RunnableQuery implements Runnable
             t = new Thread (this, threadName);
             t.start();
         }
-        System.out.println("Exiting " + threadName);
+        System.out.println("Exiting thread: " + threadName);
     }
 }
