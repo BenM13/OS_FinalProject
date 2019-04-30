@@ -36,7 +36,7 @@ public class SQLiteConnection
         this.results = null;
     }
 
-    public void createConnection(ReentrantLock rl)
+    public void createConnection(ReentrantLock rl, String threadName)
     /**
     Creates a connection object to the SQLite database.
     This object is stored as an instance variable of
@@ -49,20 +49,18 @@ public class SQLiteConnection
         try
         {
             conn = DriverManager.getConnection(URL);
-            // System.out.println("Connection established.");
-            logger.writeToAll(Utilities.getTimestamp() + " - Connection established.");
+            logger.writeToAll(threadName + ": " + Utilities.getTimestamp() + 
+                              " - Connection established.");
         } catch (SQLException e) {
-            // System.out.println("Error: Unable to connect to database:");
-            logger.writeToAll(Utilities.getTimestamp() +
+            logger.writeToAll(threadName + ": " + Utilities.getTimestamp() +
                              " - ERROR: Unable to connect to database:");
-            ///System.out.println("\t" + e.getMessage());
             logger.writeToAll("\t" + e.getMessage());
         }
         logger.closeFile();
         rl.unlock();
     }
 
-    public void runQuery(ReentrantLock rl, String query)
+    public void runQuery(ReentrantLock rl, String query, String threadName)
     /** 
     Creates a statement objects. Runs the provided query.
     Saves result set object as instance variable of 
@@ -76,12 +74,10 @@ public class SQLiteConnection
         {
             stmt = conn.createStatement();
             results = stmt.executeQuery(query);
-            // System.out.println("Executing query...");
-            logger.writeToAll(Utilities.getTimestamp() + " - Executing query...");
+            logger.writeToAll(threadName + ": " + Utilities.getTimestamp() + 
+                              " - Executing query...");
         } catch (SQLException e) {
-            // System.out.println("There was a problem with the query:");
-            // System.out.println("\t" + e.getMessage());
-            logger.writeToAll(Utilities.getTimestamp() + 
+            logger.writeToAll(threadName + ": " + Utilities.getTimestamp() + 
                             " - There was a problem with the query:");
             logger.writeToAll("\t" + e.getMessage());
         }
@@ -89,7 +85,7 @@ public class SQLiteConnection
         rl.unlock();
     }
     
-    public void closeConnection(ReentrantLock rl)
+    public void closeConnection(ReentrantLock rl, String threadName)
     /** 
     Closes the statement and connection objects
     */
@@ -104,10 +100,11 @@ public class SQLiteConnection
                 throw new SQLException("Connection and/or statement object is null");
             } else {
                 conn.close();
-                logger.writeToAll(Utilities.getTimestamp() + " - Connection closed.");
+                logger.writeToAll(threadName+ ": " + Utilities.getTimestamp() + 
+                                  " - Connection closed.");
             }
         } catch (SQLException e) {
-            logger.writeToAll(Utilities.getTimestamp() + 
+            logger.writeToAll(threadName + ": " + Utilities.getTimestamp() + 
                              " - ERROR: Unable to closer connection");
             logger.writeToAll("\t" + e.getMessage());
         }
@@ -115,7 +112,7 @@ public class SQLiteConnection
         rl.unlock();
     }
 
-    public void printResults(ReentrantLock rl, String[] args, int threadNum)
+    public void printResults(ReentrantLock rl, String[] args, int num, String name)
     /** 
     Creates an object of the FileOutput class.
     If user provided an output file name, that name is passed
@@ -126,7 +123,7 @@ public class SQLiteConnection
     written to the log file. 
     */
     {
-        String outputFile = Utilities.getOutputFile(args, threadNum);
+        String outputFile = Utilities.getOutputFile(args, num);
         rl.lock();
         FileOutput exporter;
         FileOutput logger = new FileOutput(LOG_NAME);
@@ -156,15 +153,15 @@ public class SQLiteConnection
                 throw new NoResultsException();
             }
         } catch (SQLException e) {
-            logger.writeToAll(Utilities.getTimestamp() +
+            logger.writeToAll(name + ": " + Utilities.getTimestamp() +
                               " - ERROR: Unable to retrieve results");
             logger.writeToAll("\t" + e.getMessage());
         } catch (NullPointerException e) {
-            logger.writeToAll(Utilities.getTimestamp() +
+            logger.writeToAll(name + ": " + Utilities.getTimestamp() +
                               " - ERROR: Unable to retrieve results");
             logger.writeToAll("\t" + e.getMessage());
         } catch (NoResultsException e) {
-            logger.writeToAll(Utilities.getTimestamp() + " - " + e.getMessage());
+            logger.writeToAll(name + ": " + Utilities.getTimestamp() + " - " + e.getMessage());
             logger.writeToAll("\tCommand line arguments may be incorrect");
         }
 

@@ -21,10 +21,10 @@ public class RunnableQuery implements Runnable
         ReentrantLock rl = new ReentrantLock();
         SQLiteConnection db = new SQLiteConnection();
 
-        db.createConnection(rl);
-        db.runQuery(rl, query);
-        db.printResults(rl, arguments, threadNum);
-        db.closeConnection(rl);    
+        db.createConnection(rl, threadName);
+        db.runQuery(rl, query, threadName);
+        db.printResults(rl, arguments, threadNum, threadName);
+        db.closeConnection(rl, threadName);    
     }
 
     public void start()
@@ -35,5 +35,6 @@ public class RunnableQuery implements Runnable
             t = new Thread (this, threadName);
             t.start();
         }
+        System.out.println("Exiting " + threadName);
     }
 }
