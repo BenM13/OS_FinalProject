@@ -84,6 +84,11 @@ public class Utilities
         return filename;
     }
 
+    public static String formatFilename(String filename, int num)
+    {
+        return filename.replace(".csv", "_") + String.valueOf(num);
+    }
+
     public static void quitProgram()
     /**
     Safely exits the program 

@@ -123,7 +123,8 @@ public class SQLiteConnection
     written to the log file. 
     */
     {
-        String outputFile = Utilities.getOutputFile(args, num);
+        // String outputFile = Utilities.getOutputFile(args, num);
+        String outputFile = String.format("results_%s.csv", String.valueOf(num));
         rl.lock();
         FileOutput exporter;
         FileOutput logger = new FileOutput(LOG_NAME);
